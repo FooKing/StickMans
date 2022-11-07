@@ -114,7 +114,7 @@ TextureImporter:
         height: 79
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 1, y: 1, z: 1, w: 1}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -152,11 +152,11 @@ TextureImporter:
         serializedVersion: 2
         x: 53
         y: 0
-        width: 50
+        width: 49
         height: 79
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 2, y: 0, z: 2, w: 3}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -188,6 +188,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: BG_NightSky
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 524
+        width: 150
+        height: 500
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 971a81e0270269b46a8333448a9b9857
+      internalID: -54288575
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -201,6 +222,7 @@ TextureImporter:
     nameFileIdTable:
       BG_Road: -588829523
       BG_Manhole: 1292164120
+      BG_NightSky: -54288575
       BG_Curb: -363836974
       BG_Path: 1872947046
   spritePackingTag: 
