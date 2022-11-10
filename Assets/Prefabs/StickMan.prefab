@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 478075742542731108}
   - component: {fileID: 5822286757274511717}
   - component: {fileID: 3132797381007534961}
-  - component: {fileID: 5600292823126390881}
   m_Layer: 0
   m_Name: Stickman_Body
   m_TagString: Untagged
@@ -134,20 +133,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &5600292823126390881
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 601224013280456842}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed6fc9c8285b4f04094087d3ecc3fb5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  restingAngle: 0
-  force: 750
 --- !u!1 &754974952867075775
 GameObject:
   m_ObjectHideFlags: 0
@@ -319,8 +304,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed6fc9c8285b4f04094087d3ecc3fb5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  restingAngle: -7
-  force: 1000
+  restingAngle: 0
+  force: 750
+  RestingUpdate: 1
+  bonesArray: []
 --- !u!1 &1744537291745931878
 GameObject:
   m_ObjectHideFlags: 0
@@ -494,6 +481,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   restingAngle: 0
   force: 750
+  RestingUpdate: 1
+  bonesArray: []
 --- !u!1 &2507428880414236980
 GameObject:
   m_ObjectHideFlags: 0
@@ -825,6 +814,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   restingAngle: 0
   force: 750
+  RestingUpdate: 1
+  bonesArray: []
 --- !u!1 &3453135869652012664
 GameObject:
   m_ObjectHideFlags: 0
@@ -959,6 +950,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7614380921398999573}
+  - component: {fileID: 9211120610965484368}
   m_Layer: 0
   m_Name: StickMan
   m_TagString: Untagged
@@ -993,6 +985,52 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9211120610965484368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3579444050695390623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed6fc9c8285b4f04094087d3ecc3fb5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  restingAngle: 0
+  force: 750
+  RestingUpdate: 1
+  bonesArray:
+  - muscle: {fileID: 673742749746274436}
+    MuscleAngle: 0
+    MuscleForce: 750
+  - muscle: {fileID: 3132797381007534961}
+    MuscleAngle: 0
+    MuscleForce: 750
+  - muscle: {fileID: 8334180027459334501}
+    MuscleAngle: 5
+    MuscleForce: 750
+  - muscle: {fileID: 3763302517224633608}
+    MuscleAngle: 0
+    MuscleForce: 750
+  - muscle: {fileID: 4089685176269861210}
+    MuscleAngle: 5
+    MuscleForce: 750
+  - muscle: {fileID: 7853448623706604813}
+    MuscleAngle: 0
+    MuscleForce: 750
+  - muscle: {fileID: 7520278276683656532}
+    MuscleAngle: 0
+    MuscleForce: 0
+  - muscle: {fileID: 42415952846280222}
+    MuscleAngle: 0
+    MuscleForce: 0
+  - muscle: {fileID: 930282332009998335}
+    MuscleAngle: 0
+    MuscleForce: 0
+  - muscle: {fileID: 2017786456854309559}
+    MuscleAngle: 0
+    MuscleForce: 0
 --- !u!1 &3828383412780788092
 GameObject:
   m_ObjectHideFlags: 0
@@ -1164,7 +1202,6 @@ GameObject:
   - component: {fileID: 4142074269995126235}
   - component: {fileID: 673742749746274436}
   - component: {fileID: 6607072005518753028}
-  - component: {fileID: 3176904145211361298}
   m_Layer: 0
   m_Name: Stickman_Head
   m_TagString: Untagged
@@ -1300,20 +1337,6 @@ HingeJoint2D:
   m_AngleLimits:
     m_LowerAngle: 0
     m_UpperAngle: 359
---- !u!114 &3176904145211361298
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6066232250883913856}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed6fc9c8285b4f04094087d3ecc3fb5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  restingAngle: 0
-  force: 750
 --- !u!1 &6354033846662381457
 GameObject:
   m_ObjectHideFlags: 0
@@ -1327,7 +1350,6 @@ GameObject:
   - component: {fileID: 552979951925631523}
   - component: {fileID: 8334180027459334501}
   - component: {fileID: 5583149161991223139}
-  - component: {fileID: 2137011197316148347}
   m_Layer: 0
   m_Name: Stickman_RThigh
   m_TagString: Untagged
@@ -1473,20 +1495,6 @@ HingeJoint2D:
   m_AngleLimits:
     m_LowerAngle: 0
     m_UpperAngle: 359
---- !u!114 &2137011197316148347
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6354033846662381457}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed6fc9c8285b4f04094087d3ecc3fb5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  restingAngle: 5
-  force: 1000
 --- !u!1 &7831854694372153594
 GameObject:
   m_ObjectHideFlags: 0

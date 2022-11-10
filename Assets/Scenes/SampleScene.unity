@@ -894,6 +894,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: StickMan
       objectReference: {fileID: 0}
+    - target: {fileID: 5600292823126390881, guid: 777624385e5b8854e9f0ee823ddb100a, type: 3}
+      propertyPath: headRB
+      value: 
+      objectReference: {fileID: 1878453628}
     - target: {fileID: 7614380921398999573, guid: 777624385e5b8854e9f0ee823ddb100a, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -938,8 +942,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3176904145211361298, guid: 777624385e5b8854e9f0ee823ddb100a, type: 3}
+    - {fileID: 2137011197316148347, guid: 777624385e5b8854e9f0ee823ddb100a, type: 3}
+    - {fileID: 6320638653377829079, guid: 777624385e5b8854e9f0ee823ddb100a, type: 3}
+    - {fileID: 949971272124315865, guid: 777624385e5b8854e9f0ee823ddb100a, type: 3}
+    - {fileID: 5620108753769938445, guid: 777624385e5b8854e9f0ee823ddb100a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 777624385e5b8854e9f0ee823ddb100a, type: 3}
+--- !u!50 &1878453628 stripped
+Rigidbody2D:
+  m_CorrespondingSourceObject: {fileID: 673742749746274436, guid: 777624385e5b8854e9f0ee823ddb100a, type: 3}
+  m_PrefabInstance: {fileID: 1878453627}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2041711718
 GameObject:
   m_ObjectHideFlags: 0
