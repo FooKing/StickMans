@@ -41,7 +41,18 @@ public class StickmanBalance : MonoBehaviour
             }
         }
     }
-    
+
+
+    private void Update()
+    {
+        if (Input.GetAxis("Horizontal") < 50f);
+        {
+            Debug.Log(Input.GetAxis("Horizontal"));
+            Rigidbody2D pelvis = bonesArray[1].muscle;
+            pelvis.AddForce(bonesArray[1].muscle.transform.right * (Input.GetAxis("Horizontal") * 20));
+        }
+        
+    }
     private void FixedUpdate()
     {
         // Add rotational force to achieve characters balance.
