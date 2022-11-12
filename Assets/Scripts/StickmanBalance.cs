@@ -18,11 +18,13 @@ public class StickmanBalance : MonoBehaviour
     // Movement Variables
     public float WalkSpeed = 50;
     public float JumpPower = 50;
-    public bool canJump = true;
+    public bool jumpCooled;
+    public bool isOnGround;
 
     public Bones[] bonesArray;
     
     [SerializeField] public Rigidbody2D mainBody;
+
 
 
     // Class to hold all references to body parts.
@@ -54,6 +56,8 @@ public class StickmanBalance : MonoBehaviour
 
     private void Update()
     {
+        
+        // Character Input Events
         if (Input.GetAxisRaw("Horizontal") >= 1)
         {
             MoveRight();
@@ -66,10 +70,13 @@ public class StickmanBalance : MonoBehaviour
 
         }
 
-        if (Input.GetButton("Jump") && canJump)
+        if (Input.GetButton("Jump"))
         {
             StartJump();
         }
+
+
+
 
     }
 
@@ -85,31 +92,45 @@ public class StickmanBalance : MonoBehaviour
         
     }
 
-    
-    
-    public void MoveRight()
+
+    private void MoveRight()
     {
         mainBody.velocity = new Vector2(10 * (WalkSpeed * Time.deltaTime), mainBody.velocity.y);
+
     }
-    
-    public void MoveLeft()
+
+    private void MoveLeft()
     {
         mainBody.velocity = new Vector2(10 * (WalkSpeed * Time.deltaTime) * -1, mainBody.velocity.y);
     }
 
     private void StartJump()
     {
-        canJump = false;
-        mainBody.velocity = new Vector2(mainBody.velocity.x, JumpPower);
+        StartCoroutine("StartCooldown", 1f);
+        if (jumpCooled && isOnGround)
+        {
+            mainBody.velocity = new Vector2(mainBody.velocity.x, JumpPower);
+        }
     }
 
     void OnCollisionEnter2D(Collision2D col)
     {
-        Debug.Log("CollisionHit" + col.gameObject.name);
+
     }
 
-    private void OnTriggerEnter2D(Collider2D col)
+    private void OnTriggerStay2D(Collider2D col)
     {
-        Debug.Log("TriggerHit" + col.gameObject.name);
+        if (col.CompareTag("Floor"))
+        {
+            isOnGround = true;
+        }
+    }
+
+    public IEnumerator StartCooldown(float time)
+    {
+        jumpCooled = false;
+        isOnGround = false;
+        yield return new WaitForSeconds(time);
+        jumpCooled = true;
     }
 }
