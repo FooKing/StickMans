@@ -4,23 +4,31 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Net.NetworkInformation;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.Serialization;
+using UnityEngine.UIElements;
 
 
 public class StickmanBalance : MonoBehaviour
 {
     public float restingAngle = 0f;
-    public float force = 50f;
-    public bool RestingUpdate = true;
+    public float force = 10f;
+    [FormerlySerializedAs("RestingUpdate")] public bool restingUpdate = true;
     
     
     // Movement Variables
-    public float WalkSpeed = 50;
-    public float JumpPower = 50;
+    [FormerlySerializedAs("WalkSpeed")] public float walkSpeed = 10;
+    [FormerlySerializedAs("JumpPower")] public float jumpPower = 50;
     public bool jumpCooled;
     public bool isOnGround;
-
+    public bool isWalking;
+    public float walkingAngle = 40;
+    public bool walkingCoRunning = false;
+    public bool walkingRightFoot;
+    public bool walkingDirectionRight;
     public Bones[] bonesArray;
     
     [SerializeField] public Rigidbody2D mainBody;
@@ -32,14 +40,15 @@ public class StickmanBalance : MonoBehaviour
     public class Bones
     {
         public Rigidbody2D muscle;
-        public float MuscleAngle;
-        public float MuscleForce;
+        [FormerlySerializedAs("MuscleAngle")] public float muscleAngle;
+        [FormerlySerializedAs("MuscleForce")] public float muscleForce;
+        [FormerlySerializedAs("RestingAngle")] public float restingAngle;
 
     }
 
     private void Awake()
     {
-
+        
         //Disable collision with own body parts
         Collider2D [] colliders = GetComponentsInChildren<Collider2D>();
         for (int i = 0; i < colliders.Length; i++)
@@ -61,31 +70,46 @@ public class StickmanBalance : MonoBehaviour
         if (Input.GetAxisRaw("Horizontal") >= 1)
         {
             MoveRight();
+            isWalking = true;
+            StartCoroutine("StartWalkAnimation",walkingDirectionRight);
+            
 
         }
 
         if (Input.GetAxisRaw("Horizontal") <= -1)
         {
             MoveLeft();
+            isWalking = true;
+            StartCoroutine("StartWalkAnimation",!walkingDirectionRight);
 
         }
+
+        if (Input.GetAxisRaw("Horizontal") == 0)
+        {
+            StopWalking();
+        }
+
 
         if (Input.GetButton("Jump"))
         {
+            print("JumpPressed");
             StartJump();
         }
+
+        
 
 
 
 
     }
+    
 
     private void FixedUpdate()
     {
         // Add rotational force to achieve characters balance.
         foreach (Bones currentBone in bonesArray)
         {
-            currentBone.muscle.MoveRotation(Mathf.LerpAngle(currentBone.muscle.rotation, currentBone.MuscleAngle, currentBone.MuscleForce * Time.deltaTime));
+            currentBone.muscle.MoveRotation(Mathf.LerpAngle(currentBone.muscle.rotation, currentBone.muscleAngle, currentBone.muscleForce * Time.deltaTime));
 
         }
 
@@ -95,13 +119,27 @@ public class StickmanBalance : MonoBehaviour
 
     private void MoveRight()
     {
-        mainBody.velocity = new Vector2(10 * (WalkSpeed * Time.deltaTime), mainBody.velocity.y);
+        walkingDirectionRight = true;
+        mainBody.velocity = new Vector2(2 * (walkSpeed * Time.deltaTime), mainBody.velocity.y);
 
     }
 
     private void MoveLeft()
     {
-        mainBody.velocity = new Vector2(10 * (WalkSpeed * Time.deltaTime) * -1, mainBody.velocity.y);
+        walkingDirectionRight = false;
+        mainBody.velocity = new Vector2(2 * (walkSpeed * Time.deltaTime) * -1, mainBody.velocity.y);
+    }
+    
+    
+    //Handle and stop movement
+    private void StopWalking()
+    {
+        isWalking = false;
+        mainBody.velocity = new Vector2(0 * (walkSpeed * Time.deltaTime) * -1, mainBody.velocity.y);
+        StopCoroutine(nameof(StartWalkAnimation));
+        walkingCoRunning = false;
+        bonesArray[2].muscleAngle = bonesArray[2].restingAngle;
+        bonesArray[4].muscleAngle = bonesArray[4].restingAngle;
     }
 
     private void StartJump()
@@ -109,13 +147,9 @@ public class StickmanBalance : MonoBehaviour
         StartCoroutine("StartCooldown", 1f);
         if (jumpCooled && isOnGround)
         {
-            mainBody.velocity = new Vector2(mainBody.velocity.x, JumpPower);
+            print("Jump");
+            mainBody.velocity = new Vector2(mainBody.velocity.x, jumpPower);
         }
-    }
-
-    void OnCollisionEnter2D(Collision2D col)
-    {
-
     }
 
     private void OnTriggerStay2D(Collider2D col)
@@ -132,5 +166,53 @@ public class StickmanBalance : MonoBehaviour
         isOnGround = false;
         yield return new WaitForSeconds(time);
         jumpCooled = true;
+    }
+
+    public  IEnumerator StartWalkAnimation()
+    {
+        if (walkingCoRunning == false)
+        {
+            walkingCoRunning = true;
+            while (isWalking)
+            {
+
+
+                if (walkingRightFoot)
+                {
+                    if (walkingDirectionRight)
+                    {
+                        bonesArray[2].muscleAngle = 40;
+                    }
+                    else
+                    {
+                        bonesArray[2].muscleAngle = -40; 
+                    }
+                    bonesArray[2].muscleAngle = 40;
+                    yield return new WaitForSeconds(0.3f);
+                    walkingRightFoot = !walkingRightFoot;
+                    bonesArray[2].muscleAngle = bonesArray[2].restingAngle;
+                }
+
+                else
+                {
+                    if (walkingDirectionRight)
+                    {
+                        bonesArray[4].muscleAngle = 40;
+                    }
+                    else
+                    {
+                        bonesArray[4].muscleAngle = -40; 
+                    }
+
+                    bonesArray[4].muscleAngle = 40;
+                    yield return new WaitForSeconds(0.3f);
+                    walkingRightFoot = !walkingRightFoot;
+                    bonesArray[4].muscleAngle = bonesArray[4].restingAngle;
+                }
+                
+
+            }
+               
+        }
     }
 }
