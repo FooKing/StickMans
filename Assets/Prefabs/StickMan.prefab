@@ -776,12 +776,12 @@ MonoBehaviour:
   restingAngle: 0
   force: 750
   restingUpdate: 1
-  walkSpeed: 1
-  jumpPower: 500
+  walkSpeed: 200
+  jumpPower: 50
   jumpCooled: 1
   isOnGround: 1
   isWalking: 0
-  walkingAngle: 40
+  walkingAngle: 60
   walkingCoRunning: 0
   walkingRightFoot: 0
   walkingDirectionRight: 0

@@ -1,28 +1,21 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Net.NetworkInformation;
-using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 using UnityEngine.Serialization;
-using UnityEngine.UIElements;
 
 
 public class StickmanBalance : MonoBehaviour
 {
     public float restingAngle = 0f;
     public float force = 10f;
-    [FormerlySerializedAs("RestingUpdate")] public bool restingUpdate = true;
+    public bool restingUpdate = true;
     
     
     // Movement Variables
-    [FormerlySerializedAs("WalkSpeed")] public float walkSpeed = 10;
-    [FormerlySerializedAs("JumpPower")] public float jumpPower = 50;
+    public float walkSpeed = 10;
+    public float jumpPower = 50;
     public bool jumpCooled;
+    public bool jumpCoRunning = false;
     public bool isOnGround;
     public bool isWalking;
     public float walkingAngle = 40;
@@ -30,8 +23,7 @@ public class StickmanBalance : MonoBehaviour
     public bool walkingRightFoot;
     public bool walkingDirectionRight;
     public Bones[] bonesArray;
-    
-    [SerializeField] public Rigidbody2D mainBody;
+    public Rigidbody2D mainBody;
 
 
 
@@ -40,9 +32,9 @@ public class StickmanBalance : MonoBehaviour
     public class Bones
     {
         public Rigidbody2D muscle;
-        [FormerlySerializedAs("MuscleAngle")] public float muscleAngle;
-        [FormerlySerializedAs("MuscleForce")] public float muscleForce;
-        [FormerlySerializedAs("RestingAngle")] public float restingAngle;
+        public float muscleAngle;
+        public float muscleForce;
+        public float restingAngle;
 
     }
 
@@ -71,36 +63,33 @@ public class StickmanBalance : MonoBehaviour
         {
             MoveRight();
             isWalking = true;
-            StartCoroutine("StartWalkAnimation",walkingDirectionRight);
-            
-
+            if (walkingCoRunning == false)
+            {
+                StartCoroutine(nameof(StartWalkAnimation));
+            }
         }
 
         if (Input.GetAxisRaw("Horizontal") <= -1)
         {
             MoveLeft();
             isWalking = true;
-            StartCoroutine("StartWalkAnimation",!walkingDirectionRight);
-
+            if (walkingCoRunning == false)
+            {
+                StartCoroutine(nameof(StartWalkAnimation)); 
+            }
         }
 
         if (Input.GetAxisRaw("Horizontal") == 0)
         {
             StopWalking();
+            isWalking = false;
         }
 
 
-        if (Input.GetButton("Jump"))
+        if (Input.GetButtonDown("Jump"))
         {
-            print("JumpPressed");
             StartJump();
         }
-
-        
-
-
-
-
     }
     
 
@@ -134,7 +123,6 @@ public class StickmanBalance : MonoBehaviour
     //Handle and stop movement
     private void StopWalking()
     {
-        isWalking = false;
         mainBody.velocity = new Vector2(0 * (walkSpeed * Time.deltaTime) * -1, mainBody.velocity.y);
         StopCoroutine(nameof(StartWalkAnimation));
         walkingCoRunning = false;
@@ -144,17 +132,23 @@ public class StickmanBalance : MonoBehaviour
 
     private void StartJump()
     {
-        StartCoroutine("StartCooldown", 1f);
+        
         if (jumpCooled && isOnGround)
         {
-            print("Jump");
+            isOnGround = false;
             mainBody.velocity = new Vector2(mainBody.velocity.x, jumpPower);
+            if ( jumpCoRunning == false)
+            {
+                StartCoroutine("StartCooldown", 1f); 
+            }
+            
         }
+        
     }
 
     private void OnTriggerStay2D(Collider2D col)
     {
-        if (col.CompareTag("Floor"))
+        if (col.CompareTag("Floor") && jumpCoRunning == false)
         {
             isOnGround = true;
         }
@@ -164,15 +158,15 @@ public class StickmanBalance : MonoBehaviour
     {
         jumpCooled = false;
         isOnGround = false;
+        jumpCoRunning = true;
         yield return new WaitForSeconds(time);
         jumpCooled = true;
+        jumpCoRunning = false;
     }
 
     public  IEnumerator StartWalkAnimation()
     {
-        if (walkingCoRunning == false)
-        {
-            walkingCoRunning = true;
+        walkingCoRunning = true;
             while (isWalking)
             {
 
@@ -181,14 +175,13 @@ public class StickmanBalance : MonoBehaviour
                 {
                     if (walkingDirectionRight)
                     {
-                        bonesArray[2].muscleAngle = 40;
+                        bonesArray[2].muscleAngle = walkingAngle;
                     }
                     else
                     {
-                        bonesArray[2].muscleAngle = -40; 
+                        bonesArray[2].muscleAngle = walkingAngle * -1; 
                     }
-                    bonesArray[2].muscleAngle = 40;
-                    yield return new WaitForSeconds(0.3f);
+                    yield return new WaitForSeconds(0.2f);
                     walkingRightFoot = !walkingRightFoot;
                     bonesArray[2].muscleAngle = bonesArray[2].restingAngle;
                 }
@@ -197,22 +190,20 @@ public class StickmanBalance : MonoBehaviour
                 {
                     if (walkingDirectionRight)
                     {
-                        bonesArray[4].muscleAngle = 40;
+                        bonesArray[4].muscleAngle = walkingAngle;
                     }
                     else
                     {
-                        bonesArray[4].muscleAngle = -40; 
+                        bonesArray[4].muscleAngle = walkingAngle * -1; 
                     }
-
-                    bonesArray[4].muscleAngle = 40;
-                    yield return new WaitForSeconds(0.3f);
+                    
+                    yield return new WaitForSeconds(0.2f);
                     walkingRightFoot = !walkingRightFoot;
                     bonesArray[4].muscleAngle = bonesArray[4].restingAngle;
                 }
                 
 
             }
-               
-        }
+            
     }
 }

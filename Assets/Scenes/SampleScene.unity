@@ -905,7 +905,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1807062079
+--- !u!1001 &1674093996
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -922,11 +922,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7614380921398999573, guid: 777624385e5b8854e9f0ee823ddb100a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.6347961
+      value: -5.504189
       objectReference: {fileID: 0}
     - target: {fileID: 7614380921398999573, guid: 777624385e5b8854e9f0ee823ddb100a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.6772768
+      value: -2.475428
       objectReference: {fileID: 0}
     - target: {fileID: 7614380921398999573, guid: 777624385e5b8854e9f0ee823ddb100a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -965,20 +965,8 @@ PrefabInstance:
       value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 9211120610965484368, guid: 777624385e5b8854e9f0ee823ddb100a, type: 3}
-      propertyPath: restingAngle
-      value: -107.26
-      objectReference: {fileID: 0}
-    - target: {fileID: 9211120610965484368, guid: 777624385e5b8854e9f0ee823ddb100a, type: 3}
-      propertyPath: bonesArray.Array.data[2].muscleAngle
-      value: -80
-      objectReference: {fileID: 0}
-    - target: {fileID: 9211120610965484368, guid: 777624385e5b8854e9f0ee823ddb100a, type: 3}
-      propertyPath: bonesArray.Array.data[3].muscleForce
-      value: 50000
-      objectReference: {fileID: 0}
-    - target: {fileID: 9211120610965484368, guid: 777624385e5b8854e9f0ee823ddb100a, type: 3}
-      propertyPath: bonesArray.Array.data[5].muscleForce
-      value: 50000
+      propertyPath: walkingAngle
+      value: 40
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 777624385e5b8854e9f0ee823ddb100a, type: 3}
