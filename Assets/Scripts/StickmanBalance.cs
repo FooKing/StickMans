@@ -18,6 +18,10 @@ public class StickmanBalance : MonoBehaviour
     public float currentHp;
     public float maxHp;
     public float attackDamage;
+    public float attackForce;
+    public float attackRange = 0.8f;
+    private bool _attackRightArm;
+    private bool _currentTargetDirectionRight;
     public List<GameObject> enemyList;
     public GameObject currentTarget;
     [Space(20)]
@@ -36,6 +40,7 @@ public class StickmanBalance : MonoBehaviour
     private bool _walkingCoRunning;
     private bool _walkingRightFoot;
     private bool _walkingDirectionRight;
+    private bool _canAtk = true;
     [Space(20)]
     
     [Header("Bone Vars")]
@@ -88,9 +93,99 @@ public class StickmanBalance : MonoBehaviour
             currentBone.muscle.MoveRotation(Mathf.LerpAngle(currentBone.muscle.rotation, currentBone.muscleAngle, currentBone.muscleForce * Time.deltaTime));
 
         }
+
         
+        // Move towards current target
+        if(Vector3.Distance(transform.position,currentTarget.transform.position) > attackRange)
+        {
+            if (transform.position.x < currentTarget.transform.position.x)
+            {
+                _currentTargetDirectionRight = true;
+                MoveRight();
+                _isWalking = true;
+                if (_walkingCoRunning == false)
+                {
+                    StartCoroutine(nameof(StartWalkAnimation));
+                }
+                
+            }
+            else
+            {
+                _currentTargetDirectionRight = false;
+                MoveLeft();
+                _isWalking = true;
+                if (_walkingCoRunning == false)
+                {
+                    StartCoroutine(nameof(StartWalkAnimation));
+                }
+            }
+            
+        }
+        else
+        {
+            StopWalking();
+            _isWalking = false;
+        }
+
+        if (Vector3.Distance(transform.position, currentTarget.transform.position) < attackRange && _canAtk)
+        {
+            //Disableattcks
+            
+            //pick random attack
+            PunchAttack1();
+            _canAtk = false;
+            StartCoroutine(AttackCooldown(Random.Range(0.8f,1.5f)));
+        }
+        
+        
+        
+        //Attacks
+        void PunchAttack1()
+        {
+            if (_currentTargetDirectionRight)
+            {
+                print("Attack1");
+                if (_attackRightArm)
+                {
+                    bonesArray[7].muscle.AddForce(new Vector2(attackForce,Random.Range(-100f,100f)),ForceMode2D.Impulse);
+                    _attackRightArm = !_attackRightArm;
+                }
+                else
+                {
+                    bonesArray[9].muscle.AddForce(new Vector2(attackForce,Random.Range(-100f,100f)),ForceMode2D.Impulse);
+                    _attackRightArm = !_attackRightArm;
+                }
+            }
+            else
+            {
+                print("Attack1");
+                if (_attackRightArm)
+                {
+                    bonesArray[7].muscle.AddForce(new Vector2(attackForce * -1,Random.Range(-100f,100f)),ForceMode2D.Impulse);
+                    _attackRightArm = !_attackRightArm;
+                }
+                else
+                {
+                    bonesArray[9].muscle.AddForce(new Vector2(attackForce * -1,Random.Range(-100f,100f)),ForceMode2D.Impulse);
+                    _attackRightArm = !_attackRightArm;
+                }
+            }
+            
+        }
+        
+        
+        
+        //AttackCooldown
+        IEnumerator AttackCooldown(float time)
+        {
+            yield return new WaitForSeconds(time);
+            _canAtk = true;
+        }
+        
+        
+        // Temp input overrides.
         //Handle Fixed inputs
-        if (Input.GetAxisRaw("Horizontal") >= 1)
+        /*if (Input.GetAxisRaw("Horizontal") >= 1)
         {
             MoveRight();
             _isWalking = true;
@@ -114,31 +209,37 @@ public class StickmanBalance : MonoBehaviour
         {
             StopWalking();
             _isWalking = false;
-        }
+        }*/
         
     }
 
 
     private void MoveRight()
     {
-        float variance = Random.Range(0, 50);
+        bonesArray[6].muscleAngle = -20f;
+        bonesArray[7].muscleAngle = 50f;
+        bonesArray[8].muscleAngle = 140f;
+        bonesArray[9].muscleAngle = 230f;
+        
         _walkingDirectionRight = true;
-        mainBody.velocity = new Vector2((walkSpeed +variance)  * Time.deltaTime, mainBody.velocity.y);
-
+        mainBody.velocity = new Vector2(walkSpeed * Time.deltaTime, mainBody.velocity.y);
     }
 
     private void MoveLeft()
     {
-        float variance = Random.Range(0, 50);
+        bonesArray[6].muscleAngle = -130f;
+        bonesArray[7].muscleAngle = -240f;
+        bonesArray[8].muscleAngle = 40f;
+        bonesArray[9].muscleAngle = -20f;
         _walkingDirectionRight = false;
-        mainBody.velocity = new Vector2((walkSpeed + variance) * Time.deltaTime * -1, mainBody.velocity.y);
+        mainBody.velocity = new Vector2(walkSpeed * Time.deltaTime * -1, mainBody.velocity.y);
     }
     
     
     //Handle and stop movement
     private void StopWalking()
     {
-        mainBody.velocity = new Vector2(0 * Time.deltaTime, mainBody.velocity.y);
+        mainBody.velocity = new Vector2(0, mainBody.velocity.y);
         StopCoroutine(nameof(StartWalkAnimation));
         _walkingCoRunning = false;
         bonesArray[2].muscleAngle = bonesArray[2].restingAngle;
@@ -147,8 +248,6 @@ public class StickmanBalance : MonoBehaviour
 
     private void StartJump()
     {
-        print(_jumpCooled);
-        print(_isOnGround);
         
         if (_jumpCooled && _isOnGround)
         {
@@ -156,7 +255,7 @@ public class StickmanBalance : MonoBehaviour
             mainBody.velocity = new Vector2(mainBody.velocity.x, jumpPower);
             if ( _jumpCoRunning == false)
             {
-                StartCoroutine(nameof(StartJumpCooldown), 1f); 
+                StartCoroutine(nameof(StartJumpCooldown), Random.Range(0.8f,1.5f)); 
             }
             
         }

@@ -132,7 +132,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!233 &7934668033297519231
 HingeJoint2D:
@@ -290,7 +290,7 @@ Rigidbody2D:
   m_Material: {fileID: 6200000, guid: e06b13a0d7f21e44eb6798f5c746f8e2, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!233 &8618483329488629514
 HingeJoint2D:
@@ -448,7 +448,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!233 &3666777143752345803
 HingeJoint2D:
@@ -606,7 +606,7 @@ Rigidbody2D:
   m_Material: {fileID: 6200000, guid: e06b13a0d7f21e44eb6798f5c746f8e2, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!233 &5677312148527534404
 HingeJoint2D:
@@ -773,12 +773,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed6fc9c8285b4f04094087d3ecc3fb5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GameInstanceManager: {fileID: 0}
-  Stickname: 
+  gameInstanceManager: {fileID: 0}
+  stickname: 
   currentHp: 100
   maxHp: 100
   attackDamage: 10
-  enemyArray: []
+  attackForce: 200
+  attackRange: 0.8
+  enemyList: []
   currentTarget: {fileID: 0}
   walkSpeed: 200
   jumpPower: 50
@@ -791,39 +793,39 @@ MonoBehaviour:
     restingAngle: 0
   - muscle: {fileID: 2194580685043929624}
     muscleAngle: 0
-    muscleForce: 5000
+    muscleForce: 750
     restingAngle: 0
   - muscle: {fileID: 8334180027459334501}
     muscleAngle: 1
-    muscleForce: 5000
+    muscleForce: 750
     restingAngle: 0
   - muscle: {fileID: 3763302517224633608}
     muscleAngle: 0
-    muscleForce: 5000
+    muscleForce: 750
     restingAngle: 0
   - muscle: {fileID: 4089685176269861210}
     muscleAngle: 1
-    muscleForce: 5000
+    muscleForce: 750
     restingAngle: 0
   - muscle: {fileID: 7853448623706604813}
     muscleAngle: 0
-    muscleForce: 5000
+    muscleForce: 750
     restingAngle: 0
   - muscle: {fileID: 7520278276683656532}
     muscleAngle: -70
-    muscleForce: 50
+    muscleForce: 500
     restingAngle: 0
   - muscle: {fileID: 42415952846280222}
     muscleAngle: -70
-    muscleForce: 50
+    muscleForce: 500
     restingAngle: 0
   - muscle: {fileID: 930282332009998335}
     muscleAngle: 70
-    muscleForce: 50
+    muscleForce: 500
     restingAngle: 0
   - muscle: {fileID: 2017786456854309559}
     muscleAngle: 70
-    muscleForce: 50
+    muscleForce: 500
     restingAngle: 0
   mainBody: {fileID: 2194580685043929624}
 --- !u!212 &3729659914507690925
@@ -979,7 +981,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3828383412780788092}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.5397, y: 0.263, z: 0}
+  m_LocalPosition: {x: -0.552, y: 0.263, z: 0}
   m_LocalScale: {x: 0.8, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1084,7 +1086,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!233 &5216894542906203962
 HingeJoint2D:
@@ -1101,12 +1103,12 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 0
   m_Anchor: {x: 0.18, y: 0}
-  m_ConnectedAnchor: {x: -0.13569994, y: 0}
+  m_ConnectedAnchor: {x: -0.14657603, y: -0.0000000022445406}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
     m_MaximumMotorForce: 10000
-  m_UseLimits: 1
+  m_UseLimits: 0
   m_AngleLimits:
     m_LowerAngle: -180
     m_UpperAngle: -50
@@ -1232,7 +1234,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!233 &6607072005518753028
 HingeJoint2D:
@@ -1390,7 +1392,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!233 &5583149161991223139
 HingeJoint2D:
@@ -1548,7 +1550,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!233 &8162512335238040584
 HingeJoint2D:
@@ -1686,7 +1688,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8998548599905310317}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.5421, y: 0.25799993, z: 0}
+  m_LocalPosition: {x: 0.559, y: 0.25799993, z: 0}
   m_LocalScale: {x: 0.8, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1791,7 +1793,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!233 &3525376399533803246
 HingeJoint2D:
@@ -1808,12 +1810,12 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 0
   m_Anchor: {x: -0.17999998, y: 0}
-  m_ConnectedAnchor: {x: 0.13622585, y: -0.0000000023637519}
+  m_ConnectedAnchor: {x: 0.15389442, y: -0.0000000023637519}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
     m_MaximumMotorForce: 10000
-  m_UseLimits: 1
+  m_UseLimits: 0
   m_AngleLimits:
     m_LowerAngle: -120
     m_UpperAngle: 0
