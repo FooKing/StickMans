@@ -1,0 +1,5 @@
+.Label {
+    -unity-font: url('project://database/Assets/UI%20Toolkit/UnityThemes/UnityDefaultRuntimeTheme.tss?fileID=2230732570650464555&guid=2110b788852a5f44c9f23c7503acb14a&type=3#NotInter-Regular');
+    -unity-font-style: bold;
+    font-size: 48px;
+}
