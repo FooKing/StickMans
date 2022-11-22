@@ -11,10 +11,11 @@ public class StickmanBalance : MonoBehaviour
 {
     #region Variables
 
-    public GameObject gameInstanceManager;
+    public GameInstanceManager gameInstanceManager;
     // Stickman player vars
     [Header("Stickman attributes")]
     public string stickname;
+    private bool _isAlive = true;
     public float currentHp;
     public float maxHp;
     public float attackDamage;
@@ -59,7 +60,7 @@ public class StickmanBalance : MonoBehaviour
 
     private void Awake()
     {
-        
+
         //Disable collision with own body parts
         Collider2D [] colliders = GetComponentsInChildren<Collider2D>();
         for (int i = 0; i < colliders.Length; i++)
@@ -88,53 +89,61 @@ public class StickmanBalance : MonoBehaviour
     private void FixedUpdate()
     {
         // Add rotational force to achieve characters balance.
-        foreach (Bones currentBone in bonesArray)
+        if (_isAlive)
         {
-            currentBone.muscle.MoveRotation(Mathf.LerpAngle(currentBone.muscle.rotation, currentBone.muscleAngle, currentBone.muscleForce * Time.deltaTime));
-
-        }
-
-        
-        // Move towards current target
-        if(Vector3.Distance(transform.position,currentTarget.transform.position) > attackRange)
-        {
-            if (transform.position.x < currentTarget.transform.position.x)
+            foreach (Bones currentBone in bonesArray)
             {
-                _currentTargetDirectionRight = true;
-                MoveRight();
-                _isWalking = true;
-                if (_walkingCoRunning == false)
-                {
-                    StartCoroutine(nameof(StartWalkAnimation));
-                }
-                
-            }
-            else
-            {
-                _currentTargetDirectionRight = false;
-                MoveLeft();
-                _isWalking = true;
-                if (_walkingCoRunning == false)
-                {
-                    StartCoroutine(nameof(StartWalkAnimation));
-                }
-            }
-            
-        }
-        else
-        {
-            StopWalking();
-            _isWalking = false;
-        }
+                currentBone.muscle.MoveRotation(Mathf.LerpAngle(currentBone.muscle.rotation, currentBone.muscleAngle, currentBone.muscleForce * Time.deltaTime));
 
-        if (Vector3.Distance(transform.position, currentTarget.transform.position) < attackRange && _canAtk)
-        {
-            //Disableattcks
-            
-            //pick random attack
-            PunchAttack1();
-            _canAtk = false;
-            StartCoroutine(AttackCooldown(Random.Range(0.8f,1.5f)));
+            }
+
+            if (currentTarget != null)
+            {
+                // Move towards current target
+                if (Vector3.Distance(mainBody.position, currentTarget.transform.GetChild(0).transform.position) >
+                    attackRange)
+                {
+                    if (mainBody.position.x < currentTarget.transform.GetChild(0).transform.position.x)
+                    {
+                        _currentTargetDirectionRight = true;
+                        MoveRight();
+                        _isWalking = true;
+                        if (_walkingCoRunning == false)
+                        {
+                            StartCoroutine(nameof(StartWalkAnimation));
+                        }
+
+                    }
+                    else
+                    {
+                        _currentTargetDirectionRight = false;
+                        MoveLeft();
+                        _isWalking = true;
+                        if (_walkingCoRunning == false)
+                        {
+                            StartCoroutine(nameof(StartWalkAnimation));
+                        }
+                    }
+
+                }
+                else
+                {
+                    StopWalking();
+                    _isWalking = false;
+                }
+
+                if (Vector3.Distance(mainBody.position, currentTarget.transform.GetChild(0).transform.position) <
+                    attackRange &&
+                    _canAtk)
+                {
+                    //Disableattcks
+
+                    //pick random attack
+                    PunchAttack1();
+                    _canAtk = false;
+                    StartCoroutine(AttackCooldown(1f));
+                }
+            }
         }
         
         
@@ -144,7 +153,6 @@ public class StickmanBalance : MonoBehaviour
         {
             if (_currentTargetDirectionRight)
             {
-                print("Attack1");
                 if (_attackRightArm)
                 {
                     bonesArray[7].muscle.AddForce(new Vector2(attackForce,Random.Range(-100f,100f)),ForceMode2D.Impulse);
@@ -158,7 +166,6 @@ public class StickmanBalance : MonoBehaviour
             }
             else
             {
-                print("Attack1");
                 if (_attackRightArm)
                 {
                     bonesArray[7].muscle.AddForce(new Vector2(attackForce * -1,Random.Range(-100f,100f)),ForceMode2D.Impulse);
@@ -262,14 +269,6 @@ public class StickmanBalance : MonoBehaviour
         
     }
 
-    private void OnTriggerStay2D(Collider2D col)
-    {
-        if (col.CompareTag("Floor") && _jumpCoRunning == false)
-        {
-            _isOnGround = true;
-        }
-    }
-
     public IEnumerator StartJumpCooldown(float time)
     {
         _jumpCooled = false;
@@ -323,13 +322,6 @@ public class StickmanBalance : MonoBehaviour
     //Add enemies to list and start searching.
     public void addEnemiesToList(List<GameObject> spawnedSticks)
     {
-        foreach (var VARIABLE in spawnedSticks)
-        {
-            if (VARIABLE != gameObject)
-            {
-                enemyList.Add(VARIABLE);
-            }
-        }
 
         StartCoroutine(GetClosestEnemy());
 
@@ -343,20 +335,60 @@ public class StickmanBalance : MonoBehaviour
         { 
             GameObject bestTarget = null;
             float closestDistanceSqr = Mathf.Infinity;
-            Vector3 currentPosition = transform.position;
-            for (int i = 0; i < enemyList.Count; i++)
+            Vector3 currentPosition = mainBody.position;
+            for (int i = 0; i < gameInstanceManager.spawnedStickmen.Count; i++)
+                if(gameInstanceManager.spawnedStickmen[i] != gameObject)
             {
-                Vector3 directionToTarget = enemyList[i].transform.position - currentPosition;
+                Vector3 directionToTarget = gameInstanceManager.spawnedStickmen[i].transform.GetChild(0).transform.position - currentPosition;
                 float dSqrToTarget = directionToTarget.sqrMagnitude;
                 if(dSqrToTarget < closestDistanceSqr)
                 {
                     closestDistanceSqr = dSqrToTarget;
-                    bestTarget = enemyList[i];
+                    bestTarget = gameInstanceManager.spawnedStickmen[i];
                 }
 
                 currentTarget = bestTarget;
             }
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(1f);
         }
     }
+
+
+    public void TakeDamage(GameObject hitBy, Collider2D hitLocation, float hitVelocity)
+    {
+        if (_isAlive)
+        {
+            currentHp = currentHp - (hitVelocity / 5);
+            print(currentHp);
+            if (currentHp <= 0)
+            {
+                HandleDeath(hitBy);
+            }
+        }
+        
+
+    }
+
+    private void HandleDeath(GameObject killedBy)
+    {
+        _isAlive = false;
+        gameInstanceManager.spawnedStickmen.Remove(this.gameObject);
+        foreach (var VARIABLE in gameInstanceManager.spawnedStickmen)
+        {
+            print(VARIABLE);
+        }
+
+    }
+
+    public void OnCollisionEnter2D(Collision2D collision)
+    {
+        print("dffsdsdfds");
+    }
+
+    public void CollisionDetected(CollisionScript childScript)
+    {
+        Debug.Log("child collided");
+    }
+
+
 }

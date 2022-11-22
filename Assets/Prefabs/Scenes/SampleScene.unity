@@ -1325,7 +1325,7 @@ PrefabInstance:
     - target: {fileID: 5190050961231242093, guid: b0f3757e271e37446869b986cf3fe72d, type: 3}
       propertyPath: stickPrefab
       value: 
-      objectReference: {fileID: 3579444050695390623, guid: 777624385e5b8854e9f0ee823ddb100a, type: 3}
+      objectReference: {fileID: 3579444050695390623, guid: 396cf4e7326cc4342a03a19edfd596a2, type: 3}
     - target: {fileID: 5190050961231242093, guid: b0f3757e271e37446869b986cf3fe72d, type: 3}
       propertyPath: playerPrefab
       value: 

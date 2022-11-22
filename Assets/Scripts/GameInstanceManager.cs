@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using Unity.VisualScripting;
@@ -11,6 +12,8 @@ public class GameInstanceManager : MonoBehaviour
     [SerializeField] private UIManager uiManager;
     [SerializeField] private GameObject stickPrefab;
     public List<GameObject> spawnedStickmen;
+    private bool _gameRunning;
+    private int startCountdown = 5;
 
     
 
@@ -18,7 +21,7 @@ public class GameInstanceManager : MonoBehaviour
     {
         if (Input.GetKeyDown("k"))
         {
-            print("K pressed");
+            uiManager.GetComponent<UIDocument>().enabled = false;
             SpawnPlayers();
         }
     }
@@ -44,16 +47,31 @@ public class GameInstanceManager : MonoBehaviour
             StickmanBalance currentStickScript = currentPlayer.GetComponent<StickmanBalance>();
             currentStickScript.stickname = uiManager.retrievedNamesList[i];
             currentStickScript.name = uiManager.retrievedNamesList[i];
+            currentStickScript.gameInstanceManager = this;
             spawnedStickmen.Add(currentPlayer);
         }
 
-        foreach (var go in spawnedStickmen)
+        if (_gameRunning == false)
         {
-            go.GetComponent<StickmanBalance>().addEnemiesToList(spawnedStickmen);
+            _gameRunning = true;
+            StartCoroutine(StartGameCountdown(startCountdown));
         }
-        
+       
 
     }
 
- 
+    private IEnumerator StartGameCountdown(int timeToStart)
+    {
+        int counter = timeToStart;
+        while (counter > 0)
+        {
+            print(counter);
+            yield return new WaitForSeconds(1);
+            counter--;
+        }
+        
+    }
+    
+
+
 }
