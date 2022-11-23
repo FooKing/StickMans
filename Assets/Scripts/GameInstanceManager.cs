@@ -13,7 +13,7 @@ public class GameInstanceManager : MonoBehaviour
     [SerializeField] private GameObject stickPrefab;
     public List<GameObject> spawnedStickmen;
     private bool _gameRunning;
-    private int startCountdown = 5;
+    private int _startCountdown = 3;
 
     
 
@@ -54,7 +54,7 @@ public class GameInstanceManager : MonoBehaviour
         if (_gameRunning == false)
         {
             _gameRunning = true;
-            StartCoroutine(StartGameCountdown(startCountdown));
+            StartCoroutine(StartGameCountdown(_startCountdown));
         }
        
 
@@ -68,6 +68,11 @@ public class GameInstanceManager : MonoBehaviour
             print(counter);
             yield return new WaitForSeconds(1);
             counter--;
+        }
+        print("MatchStart");
+        foreach (var go in spawnedStickmen)
+        {
+            go.GetComponent<StickmanBalance>().StartMatch();
         }
         
     }

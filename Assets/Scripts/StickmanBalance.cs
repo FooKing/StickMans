@@ -49,14 +49,20 @@ public class StickmanBalance : MonoBehaviour
     [SerializeField] private Rigidbody2D mainBody;
     #endregion
     // Class to hold all references to body parts.
-    [Serializable]
-    public class Bones
+
+    #region Classes
+
+    [Serializable] public class Bones
     {
         public Rigidbody2D muscle;
         public float muscleAngle;
         public float muscleForce;
         public float restingAngle;
     }
+
+    #endregion
+
+    #region Awake
 
     private void Awake()
     {
@@ -73,18 +79,10 @@ public class StickmanBalance : MonoBehaviour
             }
         }
     }
-    
 
-    private void Update()
-    {
-        
-        // HandleJump
-        if (Input.GetButtonDown("Jump"))
-        {
-            StartJump();
-        }
-    }
-    
+    #endregion
+
+    #region FixedUpdate
 
     private void FixedUpdate()
     {
@@ -145,81 +143,22 @@ public class StickmanBalance : MonoBehaviour
                 }
             }
         }
-        
-        
-        
-        //Attacks
-        void PunchAttack1()
-        {
-            if (_currentTargetDirectionRight)
-            {
-                if (_attackRightArm)
-                {
-                    bonesArray[7].muscle.AddForce(new Vector2(attackForce,Random.Range(-100f,100f)),ForceMode2D.Impulse);
-                    _attackRightArm = !_attackRightArm;
-                }
-                else
-                {
-                    bonesArray[9].muscle.AddForce(new Vector2(attackForce,Random.Range(-100f,100f)),ForceMode2D.Impulse);
-                    _attackRightArm = !_attackRightArm;
-                }
-            }
-            else
-            {
-                if (_attackRightArm)
-                {
-                    bonesArray[7].muscle.AddForce(new Vector2(attackForce * -1,Random.Range(-100f,100f)),ForceMode2D.Impulse);
-                    _attackRightArm = !_attackRightArm;
-                }
-                else
-                {
-                    bonesArray[9].muscle.AddForce(new Vector2(attackForce * -1,Random.Range(-100f,100f)),ForceMode2D.Impulse);
-                    _attackRightArm = !_attackRightArm;
-                }
-            }
-            
-        }
-        
-        
-        
-        //AttackCooldown
-        IEnumerator AttackCooldown(float time)
-        {
-            yield return new WaitForSeconds(time);
-            _canAtk = true;
-        }
-        
-        
-        // Temp input overrides.
-        //Handle Fixed inputs
-        /*if (Input.GetAxisRaw("Horizontal") >= 1)
-        {
-            MoveRight();
-            _isWalking = true;
-            if (_walkingCoRunning == false)
-            {
-                StartCoroutine(nameof(StartWalkAnimation));
-            }
-        }
-
-        if (Input.GetAxisRaw("Horizontal") <= -1)
-        {
-            MoveLeft();
-            _isWalking = true;
-            if (_walkingCoRunning == false)
-            {
-                StartCoroutine(nameof(StartWalkAnimation)); 
-            }
-        }
-
-        if (Input.GetAxisRaw("Horizontal") == 0)
-        {
-            StopWalking();
-            _isWalking = false;
-        }*/
-        
     }
 
+    #endregion
+
+    #region Start Match Called
+
+    // Start Match
+
+    public void StartMatch()
+    {
+        StartCoroutine(FindClosestTarget());
+    }
+
+    #endregion
+    
+    #region Movement
 
     private void MoveRight()
     {
@@ -282,77 +221,46 @@ public class StickmanBalance : MonoBehaviour
     public  IEnumerator StartWalkAnimation()
     {
         _walkingCoRunning = true;
-            while (_isWalking)
-            {
+        while (_isWalking)
+        {
 
-                //Change right thigh angle then alternate to left
-                if (_walkingRightFoot)
+            //Change right thigh angle then alternate to left
+            if (_walkingRightFoot)
+            {
+                if (_walkingDirectionRight)
                 {
-                    if (_walkingDirectionRight)
-                    {
-                        bonesArray[2].muscleAngle = walkingAngle;
-                    }
-                    else
-                    {
-                        bonesArray[2].muscleAngle = walkingAngle * -1; 
-                    }
-                    yield return new WaitForSeconds(strideSpeed);
-                    _walkingRightFoot = !_walkingRightFoot;
-                    bonesArray[2].muscleAngle = bonesArray[2].restingAngle;
+                    bonesArray[2].muscleAngle = walkingAngle;
                 }
-                //Change left thigh angle then alternate to right
                 else
                 {
-                    if (_walkingDirectionRight)
-                    {
-                        bonesArray[4].muscleAngle = walkingAngle;
-                    }
-                    else
-                    {
-                        bonesArray[4].muscleAngle = walkingAngle * -1; 
-                    }
-                    
-                    yield return new WaitForSeconds(strideSpeed);
-                    _walkingRightFoot = !_walkingRightFoot;
-                    bonesArray[4].muscleAngle = bonesArray[4].restingAngle;
+                    bonesArray[2].muscleAngle = walkingAngle * -1; 
                 }
+                yield return new WaitForSeconds(strideSpeed);
+                _walkingRightFoot = !_walkingRightFoot;
+                bonesArray[2].muscleAngle = bonesArray[2].restingAngle;
             }
-    }
-    
-    //Add enemies to list and start searching.
-    public void addEnemiesToList(List<GameObject> spawnedSticks)
-    {
-
-        StartCoroutine(GetClosestEnemy());
-
-    }
-    
-    
-    //Find closest enemy
-    public IEnumerator GetClosestEnemy()
-    {
-        while (true)
-        { 
-            GameObject bestTarget = null;
-            float closestDistanceSqr = Mathf.Infinity;
-            Vector3 currentPosition = mainBody.position;
-            for (int i = 0; i < gameInstanceManager.spawnedStickmen.Count; i++)
-                if(gameInstanceManager.spawnedStickmen[i] != gameObject)
+            //Change left thigh angle then alternate to right
+            else
             {
-                Vector3 directionToTarget = gameInstanceManager.spawnedStickmen[i].transform.GetChild(0).transform.position - currentPosition;
-                float dSqrToTarget = directionToTarget.sqrMagnitude;
-                if(dSqrToTarget < closestDistanceSqr)
+                if (_walkingDirectionRight)
                 {
-                    closestDistanceSqr = dSqrToTarget;
-                    bestTarget = gameInstanceManager.spawnedStickmen[i];
+                    bonesArray[4].muscleAngle = walkingAngle;
                 }
-
-                currentTarget = bestTarget;
+                else
+                {
+                    bonesArray[4].muscleAngle = walkingAngle * -1; 
+                }
+                    
+                yield return new WaitForSeconds(strideSpeed);
+                _walkingRightFoot = !_walkingRightFoot;
+                bonesArray[4].muscleAngle = bonesArray[4].restingAngle;
             }
-            yield return new WaitForSeconds(1f);
         }
     }
 
+    #endregion
+    
+    #region Combat
 
     public void TakeDamage(GameObject hitBy, Collider2D hitLocation, float hitVelocity)
     {
@@ -373,22 +281,72 @@ public class StickmanBalance : MonoBehaviour
     {
         _isAlive = false;
         gameInstanceManager.spawnedStickmen.Remove(this.gameObject);
-        foreach (var VARIABLE in gameInstanceManager.spawnedStickmen)
+        foreach (var go in gameInstanceManager.spawnedStickmen)
         {
-            print(VARIABLE);
+            print(go);
         }
 
     }
-
-    public void OnCollisionEnter2D(Collision2D collision)
+    //Find closest target
+    public IEnumerator FindClosestTarget()
     {
-        print("dffsdsdfds");
-    }
+        while (true)
+        { 
+            print(gameInstanceManager.spawnedStickmen.Count);
+            GameObject bestTarget = null;
+            float bestDistance = Mathf.Infinity;
+            Vector3 currentPosition = mainBody.position;
+            for (int i = 0; i < gameInstanceManager.spawnedStickmen.Count; i++)
+            {
+                float currentDistance = Vector3.Distance(gameInstanceManager.spawnedStickmen[i].transform.position, currentPosition);
+                if(currentDistance < bestDistance)
+                {
+                    bestDistance = currentDistance;
+                    bestTarget = gameInstanceManager.spawnedStickmen[i];
+                }
 
-    public void CollisionDetected(CollisionScript childScript)
+                currentTarget = bestTarget;
+                yield return new WaitForSeconds(1f);
+            }
+               
+            
+        }
+    }
+    void PunchAttack1()
     {
-        Debug.Log("child collided");
+        if (_currentTargetDirectionRight)
+        {
+            if (_attackRightArm)
+            {
+                bonesArray[7].muscle.AddForce(new Vector2(attackForce,Random.Range(-100f,100f)),ForceMode2D.Impulse);
+                _attackRightArm = !_attackRightArm;
+            }
+            else
+            {
+                bonesArray[9].muscle.AddForce(new Vector2(attackForce,Random.Range(-100f,100f)),ForceMode2D.Impulse);
+                _attackRightArm = !_attackRightArm;
+            }
+        }
+        else
+        {
+            if (_attackRightArm)
+            {
+                bonesArray[7].muscle.AddForce(new Vector2(attackForce * -1,Random.Range(-100f,100f)),ForceMode2D.Impulse);
+                _attackRightArm = !_attackRightArm;
+            }
+            else
+            {
+                bonesArray[9].muscle.AddForce(new Vector2(attackForce * -1,Random.Range(-100f,100f)),ForceMode2D.Impulse);
+                _attackRightArm = !_attackRightArm;
+            }
+        }
+            
     }
-
-
+    //AttackCooldown
+    IEnumerator AttackCooldown(float time)
+    {
+        yield return new WaitForSeconds(time);
+        _canAtk = true;
+    }
+    #endregion
 }
