@@ -23,8 +23,8 @@ public class StickmanBalance : MonoBehaviour
     public float attackRange = 0.8f;
     private bool _attackRightArm;
     private bool _currentTargetDirectionRight;
-    public List<GameObject> enemyList;
-    public GameObject currentTarget;
+    public GameObject _currentTarget;
+    public GameObject _bestTarget;
     [Space(20)]
     
     
@@ -95,13 +95,13 @@ public class StickmanBalance : MonoBehaviour
 
             }
 
-            if (currentTarget != null)
+            if (_currentTarget != null)
             {
                 // Move towards current target
-                if (Vector3.Distance(mainBody.position, currentTarget.transform.GetChild(0).transform.position) >
+                if (Vector3.Distance(transform.GetChild(0).transform.position, _currentTarget.transform.GetChild(0).transform.position) >
                     attackRange)
                 {
-                    if (mainBody.position.x < currentTarget.transform.GetChild(0).transform.position.x)
+                    if (transform.GetChild(0).transform.position.x < _currentTarget.transform.GetChild(0).transform.position.x)
                     {
                         _currentTargetDirectionRight = true;
                         MoveRight();
@@ -130,17 +130,17 @@ public class StickmanBalance : MonoBehaviour
                     _isWalking = false;
                 }
 
-                if (Vector3.Distance(mainBody.position, currentTarget.transform.GetChild(0).transform.position) <
-                    attackRange &&
-                    _canAtk)
-                {
-                    //Disableattcks
-
-                    //pick random attack
-                    PunchAttack1();
-                    _canAtk = false;
-                    StartCoroutine(AttackCooldown(1f));
-                }
+                // if (Vector3.Distance(transform.GetChild(0).transform.position, currentTarget.transform.GetChild(0).transform.position) <
+                //     attackRange &&
+                //     _canAtk)
+                // {
+                //     //Disableattcks
+                //
+                //     //pick random attack
+                //     PunchAttack1();
+                //     _canAtk = false;
+                //     StartCoroutine(AttackCooldown(1f));
+                // }
             }
         }
     }
@@ -267,7 +267,6 @@ public class StickmanBalance : MonoBehaviour
         if (_isAlive)
         {
             currentHp = currentHp - (hitVelocity / 5);
-            print(currentHp);
             if (currentHp <= 0)
             {
                 HandleDeath(hitBy);
@@ -291,22 +290,23 @@ public class StickmanBalance : MonoBehaviour
     public IEnumerator FindClosestTarget()
     {
         while (true)
-        { 
-            print(gameInstanceManager.spawnedStickmen.Count);
-            GameObject bestTarget = null;
+        {
             float bestDistance = Mathf.Infinity;
-            Vector3 currentPosition = mainBody.position;
             for (int i = 0; i < gameInstanceManager.spawnedStickmen.Count; i++)
             {
-                float currentDistance = Vector3.Distance(gameInstanceManager.spawnedStickmen[i].transform.position, currentPosition);
-                if(currentDistance < bestDistance)
+                if (gameObject != gameInstanceManager.spawnedStickmen[i])
                 {
-                    bestDistance = currentDistance;
-                    bestTarget = gameInstanceManager.spawnedStickmen[i];
-                }
+                    float currentDistance = Vector2.Distance(transform.GetChild(0).transform.position,
+                        gameInstanceManager.spawnedStickmen[i].transform.GetChild(0).transform.position);
+                    if (currentDistance < bestDistance)
+                    {
+                        bestDistance = currentDistance;
+                        _bestTarget = gameInstanceManager.spawnedStickmen[i];
+                    }
 
-                currentTarget = bestTarget;
-                yield return new WaitForSeconds(1f);
+                    _currentTarget = _bestTarget;
+                    yield return new WaitForSeconds(0.5f);
+                }
             }
                
             

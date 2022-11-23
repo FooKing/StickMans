@@ -33,7 +33,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7614380921398999573}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5624384186840241323
 SpriteRenderer:
@@ -509,7 +509,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7614380921398999573}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7787168666615997651
 SpriteRenderer:
@@ -821,9 +821,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8147258814752837659}
   - {fileID: 4564986359397982804}
   - {fileID: 2877431785496791679}
-  - {fileID: 8147258814752837659}
   - {fileID: 5846544096151452604}
   - {fileID: 1170599280692232326}
   - {fileID: 1870441631097285430}
@@ -852,7 +852,7 @@ MonoBehaviour:
   maxHp: 100
   attackDamage: 10
   attackForce: 200
-  attackRange: 0.8
+  attackRange: 1
   enemyList: []
   currentTarget: {fileID: 0}
   walkSpeed: 200
@@ -935,7 +935,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7614380921398999573}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7513672004746897564
 SpriteRenderer:
